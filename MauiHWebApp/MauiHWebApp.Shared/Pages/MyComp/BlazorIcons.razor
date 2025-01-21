@@ -1,0 +1,55 @@
+﻿@page "/icons"
+
+<h3>PSC.Blazor.Components.Icons</h3>
+
+@using System.Reflection
+@using PSC.Blazor.Components.Icons
+
+<PageTitle>Icons</PageTitle>
+
+<hr />
+<SVGFlag CountryCode="LY" FlagType="FlagType.Wide" Width="45" Height="25" />
+<hr />
+
+
+
+<SVGIcon class="icon" Elements="@SVGIcons.Alarm" Color="red" />
+<SVGIcon class="icon" Elements="@SVGIcons.Code" Size="52" />
+<SVGIcon class="icon" Elements="@SVGIcons.Copy" Color="blue" />
+
+<SVGIcon class="icon" Elements="@SVGIcons.Send" />
+<SVGIcon class="icon" Elements="@SVGIcons.Menu_2" />
+<SVGIcon class="icon" Elements="@SVGIcons.Accessible" />
+<hr />
+
+
+<hr />
+<SVGIcon class="icon" Elements="@SVGIcons.Transfer_out" />
+<SVGIcon class="icon" Elements="@SVGIcons.File_plus" />
+
+
+<h3>All SVG Icons</h3>
+@foreach (var icon in icons)
+{
+    <div class="icon-container">
+        <SVGIcon class="icon" Elements="@icon.Icon.ToString()" />
+        <span>@icon.Name</span>
+    </div>
+
+}
+
+
+
+@code {
+    
+    private List<(string Name, object? Icon)>? icons;
+   
+    protected override void OnInitialized()
+    {
+         icons = typeof(SVGIcons).GetProperties(BindingFlags.Static | BindingFlags.Public)
+                               .Select(prop => (prop.Name, prop.GetValue(null)))
+                               .ToList();
+     
+    }
+    
+}

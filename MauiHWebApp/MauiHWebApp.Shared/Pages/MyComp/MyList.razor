@@ -1,0 +1,91 @@
+﻿@page "/mylist"
+
+@using Microsoft.AspNetCore.Components.QuickGrid;
+@using PSC.Blazor.Components.Icons
+<div class="container">
+    <div class="row d-flex justify-content-md-center">
+        <div class="col-lg-8">
+            <p>
+                Show:
+                <label class="dynamic-column"><input type="checkbox" @bind="showName"/>Name </label>
+                <label class="dynamic-column"> <input type="checkbox" @bind="showCategory" />Category </label>
+            </p>
+            
+            
+            <div class="page-size-chooser">
+                Items per page:
+                <select @bind="@pagination.ItemsPerPage">
+                    <option>5</option>
+                    <option>10</option>
+                    <option>20</option>
+                    <option>50</option>
+                </select>
+            
+            </div>
+            <div>
+                <QuickGrid Items="@products" Pagination="pagination" >
+                
+                    <TemplateColumn Title="Image">
+                        
+                        <div class="image-container flex items-center">
+                            @* <img class="card-image" src="https://via.placeholder.com/150" alt="Placeholder Image" /> *@
+                            <img class="card-image" src="@context.Img" alt="Placeholder Image" />
+                        </div>
+                    </TemplateColumn>
+                
+                
+                
+                    @if (showName)
+                    { 
+                        <TemplateColumn Title="Name">
+                            <div class="flex items-center">
+                                <nobr>
+                                    <strong>@context.Name</strong>
+                                </nobr>
+                            </div>
+                        </TemplateColumn>
+                    }
+                    @if (showCategory)
+                    {
+                        <PropertyColumn Property="@(u=> u.Category)" Sortable="true" Align="Align.Start" />
+                    }
+                    <TemplateColumn Title="Actions">
+                        <button class="m-1" @onclick="() => Edit(context)">
+                            <SVGIcon class="icon" Elements="@SVGIcons.Edit" Size="30" Color="Blue"></SVGIcon>
+                        </button>
+                        <button class="m-1" @onclick="() => Delete(context)">
+                            <SVGIcon class="icon" Elements="@SVGIcons.Trash" Size="30" Color="Red"></SVGIcon>
+                        </button>
+                    </TemplateColumn>
+                
+                
+                
+                </QuickGrid>
+            </div>
+            <Paginator State="@pagination" />
+            <p> @message</p>
+
+        </div>
+    </div>
+</div>
+@code {
+    bool showName = true;
+    bool showCategory = true;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+    string message = string.Empty;
+    record Product(int Id, string Name, string Category, string Img);
+    IQueryable<Product> products = new[]
+    {
+        new Product(1,"OnePlus 12", "OnePlus","_content/MauiHWebApp.Shared/images/OnePlus12.png"),
+        new Product(2,"POCO F6 5G", "Xiaomi","_content/MauiHWebApp.Shared/images/Redmi.png"),
+        new Product(3,"Redmi N 12", "Xiaomi","_content/MauiHWebApp.Shared/images/Redmi.png"),
+        new Product(4,"15-Plus", "iPhone","_content/MauiHWebApp.Shared/images/iPhone-15-Plus.png"),
+        new Product(5,"16 Pro", "iPhone","_content/MauiHWebApp.Shared/images/iPhone16Pro.png"),
+        new Product(6,"16 Pro max", "iPhone","_content/MauiHWebApp.Shared/images/iPhone16ProMax.png"),
+        new Product(7,"16 plus", "iPhone","_content/MauiHWebApp.Shared/images/iPhone16Plus.png"),
+        new Product(8,"14 Ultra", "Xiaomi","_content/MauiHWebApp.Shared/images/Xiaomi14Ultra.png"),
+    }.AsQueryable();
+    void Edit(Product p) => message = "Edit clicked";
+    void Delete(Product p) => message = "Delete clicked";
+}
+
